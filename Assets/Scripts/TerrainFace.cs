@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class TerrainFace {
 
+    ShapeGenerator shapeGen;
     Mesh mesh;
     int res;
     Vector3 localUp;
     Vector3 axisA;
     Vector3 axisB;
 
-    public TerrainFace(Mesh mesh, int res, Vector3 localUp)
+    public TerrainFace(ShapeGenerator shapeGen, Mesh mesh, int res, Vector3 localUp)
     {
+        this.shapeGen = shapeGen;
         this.mesh = mesh;
         this.res = res;
         this.localUp = localUp;
@@ -35,7 +37,7 @@ public class TerrainFace {
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
 
-                vertices[i] = pointOnUnitSphere;
+                vertices[i] = shapeGen.CalculatePointOnPlanet(pointOnUnitSphere);
                 if (x != res - 1 && y != res - 1)
                 {
                     triangles[triIndex] = i;
