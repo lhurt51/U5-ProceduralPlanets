@@ -18,7 +18,8 @@ public class Planet : MonoBehaviour {
     [HideInInspector]
     public bool colorSettingsFoldout;
 
-    ShapeGenerator shapeGen;
+    ShapeGenerator shapeGen = new ShapeGenerator();
+    ColorGenerator colorGen = new ColorGenerator();
 
     [SerializeField, HideInInspector]
     MeshFilter[] meshFilters;
@@ -28,7 +29,8 @@ public class Planet : MonoBehaviour {
     {
         Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
 
-        shapeGen = new ShapeGenerator(shapeSettings);
+        shapeGen.UpdateSettings(shapeSettings);
+        colorGen.UpdateSettings(colorSettings);
         if (meshFilters == null || meshFilters.Length == 0) meshFilters = new MeshFilter[6];
         terrainFaces = new TerrainFace[6];
 
@@ -39,10 +41,11 @@ public class Planet : MonoBehaviour {
                 GameObject meshObj = new GameObject("mesh");
 
                 meshObj.transform.parent = transform;
-                meshObj.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
+                meshObj.AddComponent<MeshRenderer>();
                 meshFilters[i] = meshObj.AddComponent<MeshFilter>();
                 meshFilters[i].sharedMesh = new Mesh();
             }
+            meshFilters[i].GetComponent<MeshRenderer>().sharedMaterial = colorSettings.planetMat;
 
             terrainFaces[i] = new TerrainFace(shapeGen, meshFilters[i].sharedMesh, resolution, directions[i]);
             bool renderFace = faceRenderMask == FaceRenderMask.All || (int)faceRenderMask - 1 == i;
@@ -56,14 +59,13 @@ public class Planet : MonoBehaviour {
         {
             if (meshFilters[i].gameObject.activeSelf) terrainFaces[i].ConstructMesh();
         }
+
+        colorGen.UpdateElevation(shapeGen.elevationMinMax);
     }
 
     void GenerateColors()
     {
-        foreach(MeshFilter m in meshFilters)
-        {
-            m.GetComponent<MeshRenderer>().sharedMaterial.color = colorSettings.planetColor;
-        }
+        colorGen.UpdateColors();
     }
 
     public void GeneratePlanet()
