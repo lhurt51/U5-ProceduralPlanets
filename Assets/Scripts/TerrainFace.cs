@@ -25,7 +25,7 @@ public class TerrainFace {
     public void ConstructMesh()
     {
         Vector3[] vertices = new Vector3[res * res];
-        Vector2[] uv = mesh.uv;
+        Vector2[] uv = (mesh.uv.Length == vertices.Length) ? mesh.uv : new Vector2[vertices.Length];
         int[] triangles = new int[(res - 1) * (res - 1) * 6];
         int triIndex = 0;
 
@@ -37,8 +37,10 @@ public class TerrainFace {
                 Vector2 percent = new Vector2(x, y) / (res - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
+                float unscaledElevation = shapeGen.CalculateUnscaledElevation(pointOnUnitSphere);
 
-                vertices[i] = shapeGen.CalculatePointOnPlanet(pointOnUnitSphere);
+                vertices[i] = pointOnUnitSphere * shapeGen.GetScaledElevation(unscaledElevation);
+                uv[i].y = unscaledElevation;
                 if (x != res - 1 && y != res - 1)
                 {
                     triangles[triIndex] = i;
@@ -62,7 +64,7 @@ public class TerrainFace {
 
     public void UpdateUVs(ColorGenerator colorGenerator)
     {
-        Vector2[] uv = new Vector2[res * res];
+        Vector2[] uv = mesh.uv;
 
         for (int y = 0; y < res; y++)
         {
@@ -73,7 +75,7 @@ public class TerrainFace {
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
 
-                uv[i] = new Vector2(colorGenerator.BiomePercentFromPoint(pointOnUnitSphere), 0);
+                uv[i].x = colorGenerator.BiomePercentFromPoint(pointOnUnitSphere);
             }
         }
 
