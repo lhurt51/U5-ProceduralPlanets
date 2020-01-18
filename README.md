@@ -12,7 +12,7 @@ Contains project files for Unity 5 Custom Editor Tools
 **Project Features**
 
   	- Procedural landmass generation
-   	- Procedural planet generation
+	- Procedural planet generation
     	- Editor tools for modifying generation
    	- World building tools
 	
