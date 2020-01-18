@@ -1,6 +1,6 @@
 # C# Procedural Planets - Unity 5
 
-Contains project files for Unity 5 Custom Editor Tools
+Contains project files for Unity 5 Procedural Planets
 
 	A complex C# project that allowed me to harness the power of Unity's procedural nature and quick random generation
 	to create world meshes. I wanted to create procedural planets with my current knowledge of voxels and procedural 
